@@ -41,21 +41,34 @@ app.get('/help', (req, res) => {
 
 
 app.get('/weather', (req, res) => { //Json array of objs as res
-    res.send([{
-        forecast: '50 degrees out',
-        location : 'Dublin'
-    },
-    {
-        forecast: '10 degrees out',
-        location : 'India'
-    }
-])
+    res.send([
+        {
+            forecast: '50 degrees out',
+            location : 'Dublin'
+        },
+        {
+            forecast: '10 degrees out',
+            location : 'India'
+        }
+    ])
 })
 
-/* app.get('/view', (req, res) => {
-    res.send('<h1>Weather</h1>');
-}) */
+app.get('/help/*', (req, res) => {  //specific 404 related to help documentation
+    res.render('404', {
+        title: '404',
+        name: 'Angel',
+        errorMessage: 'Help article not found'
+    })
+}) 
 
-app.listen(3000, () => {
+app.get('*', (req, res) => {   //generic 404 pages    
+    res.render('404', {
+        title: '404',
+        name: 'Angel',
+        errorMessage: 'Page not found'
+    })
+}) 
+
+app.listen(3000, () => {        
     console.log("Server is up on port 3000");
 })
