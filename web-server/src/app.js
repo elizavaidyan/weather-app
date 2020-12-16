@@ -1,37 +1,44 @@
 const path = require('path');
 const express = require('express');
+const hbs = require('hbs');
 
 const app = express();
 
-//console.log(__dirname);
-//console.log(__filename);
-
-app.set('view engine', 'hbs'); //Setting up the template handlebar to express
+//Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public');
+const viewsPath = path.join(__dirname, '../templates/views'); 
+const partialsPath = path.join(__dirname, '../templates/partials');   //Setting up new path to views after renaming views directory to templates
 
-app.use(express.static(publicDirectoryPath));  // cpnfiguring express to server up from a static directory
+//Set up handlebar engine and views location
+app.set('view engine', 'hbs');   
+app.set('views', viewsPath);  
+hbs.registerPartials(partialsPath);
 
+//Set up static directory to serve
+app.use(express.static(publicDirectoryPath));
 
 app.get('', (req, res) => {  
-    app.render('index', {
+    res.render('index', {
         title: 'Weather App',
         name: 'Angel'
     })   
 })
-app.get('', (req,res) => {  //Route handler
-    res.send('Hello Express!');
+
+app.get('/about', (req, res) => {
+    res.render('about', {
+        title: 'About',
+        name: 'Angel'
+    });
 })
 
-/* app.get('/help', (req, res) => {  //Rendering HTML as res
-    res.send('<h1>Help Page</h1>')
-}) 
-
-app.get('/about', (req, res) => {   //Json obj as res
-    res.send({
-        name: 'Angel',
-        age: 27
+app.get('/help', (req, res) => {
+    res.render('help', {
+        helpText: 'This is some helpful text',
+        title: 'Help',
+        name: 'Angel'
     });
-})  */
+})
+
 
 app.get('/weather', (req, res) => { //Json array of objs as res
     res.send([{
