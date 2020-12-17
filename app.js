@@ -43,24 +43,16 @@ forecast(-73.9808, 40.7648, (error, data) => {
   if (!address) {
       console.log("Please provide an address");
   } else {
-        //Callback chaining
-       /* geocode(address, (error, data) => {
-            if (error) {
-                return console.log(error);
-            }
         
-            forecast(data.latitude, data.longitude, (error, forecastData) => {
-            console.log(data.location)
-            console.log(forecastData)
-            })
-        })
-        */
        geocode(address, (error, {latitude, longitude, location} ) => { //Object destructuring with func args
         if (error) {
-            return console.log(error);
+            return console.log(error);   //Object property shorthand
         }
     
-        forecast(latitude, longitude, (error, forecastData) => {
+    forecast(latitude, longitude, (error, forecastData) => {
+        if (error) {
+            return res.send({ error })      //error:error; //Object property shorthand
+        }
         console.log(location)
         console.log(forecastData)
         })

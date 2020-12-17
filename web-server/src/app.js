@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
+const geocode = require('./utils/geocode');
+const forecast = require('./utils/forecast');
 
 const app = express();
 
@@ -41,18 +43,47 @@ app.get('/help', (req, res) => {
 
 
 app.get('/weather', (req, res) => { //Json array of objs as res
-    res.send([
-        {
-            forecast: '50 degrees out',
-            location : 'Dublin'
-        },
-        {
-            forecast: '10 degrees out',
-            location : 'India'
+    
+    const address = req.query.address
+    if (!req.query.address) {
+        return res.send({
+            error: 'Address must be provided'
+        })
+       
+    }
+    geocode(req.query.address, (error, {latitude, longitude, location} = {}) => {    //Object destructuring with func args
+        if (error) {
+            return res.send({ error })      //error:error; //Object property shorthand
         }
-    ])
+    
+        forecast(latitude, longitude, (error, forecastData) => {
+            if (error) {
+                return res.send({ error })      //error:error; //Object property shorthand
+            }
+            res.send({
+                location,       //Object property shorthand
+                address: req.query.address,
+                forecast: forecastData
+            })
+        
+        })
+   
+    })
 })
 
+app.get('/products', (req, res) => {
+    //console.log(req.query);
+
+    if (!req.query.search) {
+        return res.send({
+             error: 'You must provide a search term'
+        })
+    }
+    console.log(req.query.search);
+    res.send({
+        products: []
+    })
+})
 app.get('/help/*', (req, res) => {  //specific 404 related to help documentation
     res.render('404', {
         title: '404',

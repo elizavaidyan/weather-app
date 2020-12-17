@@ -29,7 +29,7 @@ const product = {
 
 console.log(productLabel, stock, rating); */
 
-const transaction = (type, {label, stock}) => {  //destructuring with func arguments
+const transaction = (type, {label, stock = 0} = {}) => {  //destructuring with func arguments
 
     console.log(type);
     console.log(label);
